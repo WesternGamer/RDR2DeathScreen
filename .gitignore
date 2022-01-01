@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Torch
+/Edit-and-run-before-opening-solution.bat
+/deploy.bat
+/Bin64

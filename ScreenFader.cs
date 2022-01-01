@@ -22,7 +22,7 @@ namespace RDR2DeathScreen
 
 		private bool m_blackScreenDataSaved;
 
-		private Color m_blackScreenDataSavedLightColor = Color.Black;
+		private Color m_blackScreenDataSavedLightColor = new Color(194, 186, 166, 255);
 
 		private Color m_blackScreenDataSavedDarkColor = Color.Black;
 
