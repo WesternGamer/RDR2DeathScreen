@@ -226,7 +226,7 @@ namespace RDR2DeathScreen
             }
             catch
             {
-                throw;
+
             }
 
             try
