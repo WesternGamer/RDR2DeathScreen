@@ -2,6 +2,7 @@
 using Sandbox.Graphics.GUI;
 using System.IO;
 using System.Threading;
+using VRage.FileSystem;
 using VRageMath;
 using VRageRender;
 using VRageRender.Messages;
@@ -15,7 +16,7 @@ namespace RDR2DeathScreen
 
         private bool m_playbackStarted;
 
-        private readonly string m_currentVideo = @"C:\Users\Kevng\Downloads\RDR2DeathScreenVideo.wmv";
+        private readonly string m_currentVideo = Path.Combine(MyFileSystem.ContentPath, @"Videos\RDR2DeathScreenVideo.wmv");
 
         public DeathVideo()
             : base(Vector2.Zero)

@@ -29,6 +29,16 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 	  <Optimize>True</Optimize>
 	</PropertyGroup>
+	<ItemGroup>
+	  <None Remove="EmbeddedFiles\HudDeathSoundMP.xwm" />
+	  <None Remove="EmbeddedFiles\HudDeathSoundSP.xwm" />
+	  <None Remove="EmbeddedFiles\RDR2DeathScreenVideo.wmv" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Include="EmbeddedFiles\HudDeathSoundSP.xwm" />
+	  <EmbeddedResource Include="EmbeddedFiles\HudDeathSoundMP.xwm" />
+	  <EmbeddedResource Include="EmbeddedFiles\RDR2DeathScreenVideo.wmv" />
+	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Lib.Harmony" Version="2.1.1" />
@@ -50,6 +60,7 @@
     <Reference Include="SpaceEngineers.Game">
       <HintPath>..\..\..\Games\steamapps\common\SpaceEngineers\Bin64\SpaceEngineers.Game.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="VRage">
       <HintPath>..\..\..\Games\steamapps\common\SpaceEngineers\Bin64\VRage.dll</HintPath>
     </Reference>

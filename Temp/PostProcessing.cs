@@ -3,7 +3,7 @@ using VRageRender;
 
 namespace RDR2DeathScreen
 {
-    internal class PostProcessing
+    internal static class PostProcessing
     {
         private static bool OnDeath;
 
@@ -80,7 +80,7 @@ namespace RDR2DeathScreen
             OnDeath = false;
         }
 
-        public void Update()
+        public static void Update()
         {
             if (OnDeath)
             {
@@ -88,7 +88,7 @@ namespace RDR2DeathScreen
             }
         }
 
-        private void VerifyDeathSettings()
+        private static void VerifyDeathSettings()
         {
             if (MyPostprocessSettingsWrapper.AllEnabled.Equals(Death.Enabled))
             {
@@ -136,7 +136,7 @@ namespace RDR2DeathScreen
             }
         }
 
-        private void VerifyDefaultSettings()
+        private static void VerifyDefaultSettings()
         {
             if (MyPostprocessSettingsWrapper.AllEnabled.Equals(Default.Enabled))
             {

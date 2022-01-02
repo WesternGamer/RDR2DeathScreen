@@ -14,9 +14,9 @@ namespace RDR2DeathScreen
 
         public Audio()
         {
-            DeathSoundSP = new MySoundPair("HudDeathAudioSound", true);
+            DeathSoundSP = new MySoundPair("DeathSoundSP", true);
 
-            DeathSoundMP = new MySoundPair("HudMpDeathFinal", true);
+            DeathSoundMP = new MySoundPair("DeathSoundMP", true);
         }
 
         public void Update()

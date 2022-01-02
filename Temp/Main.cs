@@ -9,8 +9,15 @@ using Sandbox.Game.Multiplayer;
 using Sandbox.Game.World;
 using Sandbox.Graphics.GUI;
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Linq;
+using VRage.FileSystem;
 using VRage.Plugins;
 using VRageRender;
 
@@ -24,9 +31,7 @@ namespace RDR2DeathScreen
 
         public Audio Audio;
 
-        public bool IsPlayerDead;
-
-        public bool IsPlayerInFirstPerson;
+        private bool IsPlayerAlreadyDead;
 
         public void Dispose()
         {
@@ -41,7 +46,17 @@ namespace RDR2DeathScreen
         {
             Harmony harmony = new Harmony("RDR2DeathScreen");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+            if (!VerfiyFiles())
+                ExtractFiles();
+
+            if (!VerifyXML())
+            {
+                WriteToXML();
+                RestartGame();
+            }
                 
+
             ScreenFader = new ScreenFader();
 
             Video = new DeathVideo();
@@ -51,14 +66,11 @@ namespace RDR2DeathScreen
 
         public void Update()
         {
-            ScreenFader.Update();
-            Audio.Update();
-
             if (MySession.Static != null)
             {
-                IsPlayerDead = GetCharacterFromPlayerId(MySession.Static.LocalPlayerId).IsDead; //Even though it is the local player Id, it still works on servers, clientside.
-                IsPlayerInFirstPerson = GetCharacterFromPlayerId(MySession.Static.LocalPlayerId).IsInFirstPersonView;
-
+                ScreenFader.Update();
+                Audio.Update();
+                PostProcessing.Update();
                 if (GetCharacterFromPlayerId(MySession.Static.LocalPlayerId).IsDead)
                 {
                     DuringDeath();
@@ -72,28 +84,32 @@ namespace RDR2DeathScreen
 
         private void DuringDeath()
         {
-            PostProcessing.ChangeToDeathSettings();
-
-            Audio.Muted = true;
-            StartFadeScreen();
-            CloseAllScreens();
-            if (!Sync.MultiplayerActive)
-            {
-                MyFakes.SIMULATION_SPEED = 0.1f;
-                Audio.PlayDeathSoundSP();
-                ShowDeadScreen();
-            }
-            else
-            {
-                Audio.PlayDeathSoundMP();
-            }
-
             if (GetCharacterFromPlayerId(MySession.Static.LocalPlayerId).IsInFirstPersonView == true)
             {
                 GetCharacterFromPlayerId(MySession.Static.LocalPlayerId).IsInFirstPersonView = false;
             }
 
-            MyGuiScreenGamePlay.DisableInput = true;
+            Audio.Muted = true;
+                       
+            if (!IsPlayerAlreadyDead)
+            {
+                MyGuiScreenGamePlay.DisableInput = true;
+                CloseAllScreens();
+                PostProcessing.ChangeToDeathSettings();
+                StartFadeScreen();
+
+                if (!Sync.MultiplayerActive)
+                {
+                    MyFakes.SIMULATION_SPEED = 0.05f;
+                    Audio.PlayDeathSoundSP();
+                    ShowDeadScreen();
+                }
+                else
+                {
+                    Audio.PlayDeathSoundMP();
+                }
+                IsPlayerAlreadyDead = true;
+            }
         }
 
         private void DuringNormal()
@@ -105,6 +121,7 @@ namespace RDR2DeathScreen
             ScreenFader.FadeScreen(1f);
             MyFakes.SIMULATION_SPEED = 1f;
             MyGuiScreenGamePlay.DisableInput = false;
+            IsPlayerAlreadyDead = false;
         }
 
         public void StartFadeScreen()
@@ -132,7 +149,7 @@ namespace RDR2DeathScreen
             });
         }
 
-        public static void CloseAllScreens()
+        private static void CloseAllScreens()
         {
             foreach (MyGuiScreenBase screen in MyScreenManager.Screens)
             {
@@ -152,6 +169,124 @@ namespace RDR2DeathScreen
                 return MySession.Static.Players.TryGetIdentity(playerId).Character;
             }
             return MySession.Static.LocalCharacter;
+        }    
+
+        private void ExtractFiles()
+        {
+            try
+            {
+                Stream stream1 = Assembly.GetExecutingAssembly().GetManifestResourceStream("RDR2DeathScreen.EmbeddedFiles.HudDeathSoundSP.xwm");
+                FileStream fileStream1 = new FileStream(Path.Combine(MyFileSystem.ContentPath, @"Audio\ARC\HUD\HudDeathSoundSP.xwm"), FileMode.CreateNew);
+                for (int i = 0; i < stream1.Length; i++)
+                    fileStream1.WriteByte((byte)stream1.ReadByte());
+                fileStream1.Close();
+            }
+            catch 
+            {
+
+            }
+
+            try
+            {
+                Stream stream2 = Assembly.GetExecutingAssembly().GetManifestResourceStream("RDR2DeathScreen.EmbeddedFiles.HudDeathSoundMP.xwm");
+                FileStream fileStream2 = new FileStream(Path.Combine(MyFileSystem.ContentPath, @"Audio\ARC\HUD\HudDeathSoundMP.xwm"), FileMode.CreateNew);
+                for (int i = 0; i < stream2.Length; i++)
+                    fileStream2.WriteByte((byte)stream2.ReadByte());
+                fileStream2.Close();
+            }
+            catch
+            {
+
+            }
+
+            try
+            {
+                Stream stream3 = Assembly.GetExecutingAssembly().GetManifestResourceStream("RDR2DeathScreen.EmbeddedFiles.RDR2DeathScreenVideo.wmv");
+                FileStream fileStream3 = new FileStream(Path.Combine(MyFileSystem.ContentPath, @"Videos\RDR2DeathScreenVideo.wmv"), FileMode.CreateNew);
+                for (int i = 0; i < stream3.Length; i++)
+                    fileStream3.WriteByte((byte)stream3.ReadByte());
+                fileStream3.Close();
+            }
+            catch
+            {
+
+            }            
+        }
+
+        private bool VerfiyFiles()
+        {
+            if (!File.Exists(Path.Combine(MyFileSystem.ContentPath, @"Audio\ARC\HUD\HudDeathSoundSP.xwm")))
+            {
+                return false;
+            }
+            if (!File.Exists(Path.Combine(MyFileSystem.ContentPath, @"Audio\ARC\HUD\HudDeathSoundMP.xwm")))
+            {
+                return false;
+            }
+            if (!File.Exists(Path.Combine(MyFileSystem.ContentPath, @"Videos\RDR2DeathScreenVideo.wmv")))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private void WriteToXML()
+        {
+            var fileName = Path.Combine(MyFileSystem.ContentPath, @"Data\Audio_gui.sbc");
+            var lineToAdd = @"  <Sound>
+      <Id>
+        <TypeId>AudioDefinition</TypeId>
+        <SubtypeId>DeathSoundMP</SubtypeId>
+      </Id>
+      <Category>HUD</Category>
+      <Volume>1.00</Volume>
+      <Waves>
+        <Wave Type='D2'>
+          <Start>ARC\HUD\HudDeathSoundMP.xwm</Start>
+        </Wave>
+      </Waves>
+    </Sound>
+    <Sound>
+      <Id>
+        <TypeId>AudioDefinition</TypeId>
+        <SubtypeId>DeathSoundSP</SubtypeId>
+      </Id>
+      <Category>HUD</Category>
+      <Volume>1.00</Volume>
+      <Waves>
+        <Wave Type='D2'>
+          <Start>ARC\HUD\HudDeathSoundSP.xwm</Start>
+        </Wave>
+      </Waves>
+    </Sound>";
+
+            var txtLines = File.ReadAllLines(fileName).ToList();
+            txtLines.Insert(3, lineToAdd);
+            File.WriteAllLines(fileName, txtLines);
+        }
+
+        private bool VerifyXML()
+        {
+            foreach (string line in File.ReadLines(Path.Combine(MyFileSystem.ContentPath, @"Data\Audio_gui.sbc")))
+            {
+                if (line.Contains(@"          <Start>ARC\HUD\HudDeathSoundMP.xwm</Start>"))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void RestartGame()
+        {
+            DialogResult result = MessageBox.Show("Game needs to be restarted to properly load audio definitions. Click Yes to restart. Click No to load game. Game will still run without the death sound if you click No.",
+               "RDR2 Death Screen: Restart Required.", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+
+            if (result == DialogResult.Yes)
+            {
+                Application.Restart();
+                Process.GetCurrentProcess().Kill();
+            }
         }
     }
 }
