@@ -280,7 +280,7 @@ namespace RDR2DeathScreen
         private void RestartGame()
         {
             DialogResult result = MessageBox.Show("Game needs to be restarted to properly load audio definitions. Click Yes to restart. Click No to load game. Game will still run without the death sound if you click No.",
-               "RDR2 Death Screen: Restart Required.", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+               "RDR2 Death Screen: Restart Required.", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
             if (result == DialogResult.Yes)
             {
