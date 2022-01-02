@@ -12,6 +12,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -48,7 +49,8 @@ namespace RDR2DeathScreen
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             if (!VerfiyFiles())
-                ExtractFiles();
+                //ExtractFiles();
+                DownloadFiles();
 
             if (!VerifyXML())
             {
@@ -211,6 +213,43 @@ namespace RDR2DeathScreen
             {
 
             }            
+        }
+
+        private void DownloadFiles()
+        {
+            WebClient webClient = new WebClient();
+
+            try
+            {
+                webClient.DownloadFile(new Uri("https://raw.githubusercontent.com/WesternGamer/RDR2DeathScreen/master/RDR2DeathScreen/EmbeddedFiles/HudDeathSoundSP.xwm"),
+                Path.Combine(MyFileSystem.ContentPath, @"Audio\ARC\HUD\HudDeathSoundSP.xwm"));
+            }
+            catch
+            {
+                throw;
+            }
+
+            try
+            {
+                webClient.DownloadFile(new Uri("https://raw.githubusercontent.com/WesternGamer/RDR2DeathScreen/master/RDR2DeathScreen/EmbeddedFiles/HudDeathSoundMP.xwm"),
+                Path.Combine(MyFileSystem.ContentPath, @"Audio\ARC\HUD\HudDeathSoundMP.xwm"));
+            }
+            catch
+            {
+
+            }
+
+            try
+            {
+                webClient.DownloadFile(new Uri("https://raw.githubusercontent.com/WesternGamer/RDR2DeathScreen/master/RDR2DeathScreen/EmbeddedFiles/RDR2DeathScreenVideo.wmv"),
+                Path.Combine(MyFileSystem.ContentPath, @"Videos\RDR2DeathScreenVideo.wmv"));
+            }
+            catch
+            {
+
+            }
+
+            webClient.Dispose();
         }
 
         private bool VerfiyFiles()
