@@ -7,3 +7,9 @@ This plugin adds the Red Dead Redemption 2 death screen a few seconds after the 
 ## Requirement
 
 Pluginloader is required to use this plugin with Space Engineers; you can find it [here](https://github.com/austinvaness/PluginLoader).
+
+## Other Info
+
+The "DEAD" screen was captured by me with OBS.
+
+The death sounds were also captured by me using OBS.
