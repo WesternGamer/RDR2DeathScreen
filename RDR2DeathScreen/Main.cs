@@ -34,6 +34,8 @@ namespace RDR2DeathScreen
 
         private bool IsPlayerAlreadyDead;
 
+        private bool IsPlayerAlreadyRespawned = true;
+
         public void Dispose()
         {
             if (Video != null)
@@ -87,17 +89,19 @@ namespace RDR2DeathScreen
 
         private void DuringDeath()
         {
-            if (GetCharacterFromPlayerId(MySession.Static.LocalPlayerId).IsInFirstPersonView == true)
-            {
-                GetCharacterFromPlayerId(MySession.Static.LocalPlayerId).IsInFirstPersonView = false;
-            }
+            IsPlayerAlreadyRespawned = false;
+            MyGuiScreenGamePlay.DisableInput = true;
 
-            Audio.Muted = true;
-                       
             if (!IsPlayerAlreadyDead)
             {
-                MyGuiScreenGamePlay.DisableInput = true;
-                CloseAllScreens();
+                if (GetCharacterFromPlayerId(MySession.Static.LocalPlayerId).IsInFirstPersonView == true)
+                {
+                    GetCharacterFromPlayerId(MySession.Static.LocalPlayerId).IsInFirstPersonView = false;
+                }
+
+                Audio.Muted = true;
+                
+                MyScreenManager.CloseAllScreensExcept(MyGuiScreenGamePlay.Static);
                 PostProcessing.ChangeToDeathSettings();
                 StartFadeScreen();
 
@@ -117,14 +121,19 @@ namespace RDR2DeathScreen
 
         private void DuringNormal()
         {
-            PostProcessing.ChangeToDefaultSettings();
-
-            Audio.Muted = false;
-
-            ScreenFader.FadeScreen(1f);
-            MyFakes.SIMULATION_SPEED = 1f;
-            MyGuiScreenGamePlay.DisableInput = false;
             IsPlayerAlreadyDead = false;
+
+            MyGuiScreenGamePlay.DisableInput = false;
+            if (!IsPlayerAlreadyRespawned)
+            {
+                MyGuiSandbox.AddScreen(MyGuiSandbox.CreateScreen(MyPerGameSettings.GUI.HUDScreen));
+                IsPlayerAlreadyRespawned = true;
+                MyFakes.SIMULATION_SPEED = 1f;
+                
+                ScreenFader.FadeScreen(1f);
+                Audio.Muted = false;
+                PostProcessing.ChangeToDefaultSettings();
+            }
         }
 
         public void StartFadeScreen()
@@ -154,15 +163,9 @@ namespace RDR2DeathScreen
 
         private static void CloseAllScreens()
         {
-            foreach (MyGuiScreenBase screen in MyScreenManager.Screens)
-            {
-                if (screen != MyGuiScreenGamePlay.Static && screen != MyGuiScreenGamePlay.ActiveGameplayScreen)
-                {
-                    screen.CloseScreen();
-                }
-            }
+            
 
-            MyGuiSandbox.AddScreen(MyGuiSandbox.CreateScreen(MyPerGameSettings.GUI.HUDScreen));
+            
         }
 
         private MyCharacter GetCharacterFromPlayerId(long playerId = 0L)
