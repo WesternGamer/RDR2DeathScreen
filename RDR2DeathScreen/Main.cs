@@ -72,18 +72,36 @@ namespace RDR2DeathScreen
         {
             if (MySession.Static != null)
             {
-                ScreenFader.Update();
-                Audio.Update();
-                PostProcessing.Update();
-
-                if (MyVisualScriptLogicProvider.IsPlayerDead(MySession.Static.LocalPlayerId))
+                try
                 {
-                    DuringDeath();
+                    ScreenFader.Update();
                 }
-                else
+                catch { }
+                
+                try 
                 {
-                    DuringNormal();
+                    Audio.Update();
                 }
+                catch { }
+                
+                try
+                {
+                    PostProcessing.Update();
+                }
+                catch { }
+                
+                try
+                {
+                    if (MyVisualScriptLogicProvider.IsPlayerDead(MySession.Static.LocalPlayerId))
+                    {
+                        DuringDeath();
+                    }
+                    else
+                    {
+                        DuringNormal();
+                    }
+                }
+                catch { }
             }
         }
 
