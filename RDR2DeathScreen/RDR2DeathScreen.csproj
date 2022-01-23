@@ -1,50 +1,67 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-	<LangVersion>default</LangVersion>
-    <Nullable>enable</Nullable>
-	<OutputPath>bin\</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PlatformTarget>x64</PlatformTarget>
-    <DebugType>embedded</DebugType>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <Authors>WesternGamer</Authors>
-    <Copyright>Copyright © WesternGamer 2022</Copyright>
-    <PackageProjectUrl>https://github.com/WesternGamer/RDR2DeathScreen</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/WesternGamer/RDR2DeathScreen</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
-    <FileVersion>0.0.1.0</FileVersion>
-    <Version>0.0.1</Version>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{603F19F3-7410-495E-BD85-0873037D2955}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RDR2DeathScreen</RootNamespace>
+    <AssemblyName>RDR2DeathScreen</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-		<DebugType>full</DebugType>
-		<Optimize>True</Optimize>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-		<DebugType>pdbonly</DebugType>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <Optimize>True</Optimize>
-	</PropertyGroup>
-	<ItemGroup>
-	  <None Remove="EmbeddedFiles\HudDeathSoundMP.xwm" />
-	  <None Remove="EmbeddedFiles\HudDeathSoundSP.xwm" />
-	  <None Remove="EmbeddedFiles\RDR2DeathScreenVideo.wmv" />
-	</ItemGroup>
-	<ItemGroup>
-	  <EmbeddedResource Include="EmbeddedFiles\HudDeathSoundSP.xwm" />
-	  <EmbeddedResource Include="EmbeddedFiles\HudDeathSoundMP.xwm" />
-	  <EmbeddedResource Include="EmbeddedFiles\RDR2DeathScreenVideo.wmv" />
-	</ItemGroup>
-
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Lib.Harmony" Version="2.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <Reference Include="0Harmony, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.2.2.0\lib\net48\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
     <Reference Include="Sandbox.Common">
       <HintPath>..\..\..\Games\steamapps\common\SpaceEngineers\Bin64\Sandbox.Common.dll</HintPath>
     </Reference>
@@ -116,9 +133,36 @@
       <HintPath>..\..\..\Games\steamapps\common\SpaceEngineers\Bin64\VRage.UserInterface.dll</HintPath>
     </Reference>
   </ItemGroup>
-
+  <ItemGroup>
+    <Compile Include="Audio.cs" />
+    <Compile Include="DeathVideo.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="Patches\BloodOverlayPatch.cs" />
+    <Compile Include="Patches\InputPatch.cs" />
+    <Compile Include="Patches\RespawnPatch.cs" />
+    <Compile Include="PostProcessing.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScreenFader.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EmbeddedFiles\HudDeathSoundMP.xwm" />
+    <EmbeddedResource Include="EmbeddedFiles\HudDeathSoundSP.xwm" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EmbeddedFiles\RDR2DeathScreenVideo.wmv" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="call &quot;$(ProjectDir)\deploy.bat&quot; &quot;$(TargetPath)&quot; &quot;$(SolutionName)&quot;" />
   </Target>
-
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>call "$(ProjectDir)\deploy.bat" "$(TargetPath)" "$(SolutionName)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
