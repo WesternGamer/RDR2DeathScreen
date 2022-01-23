@@ -179,13 +179,6 @@ namespace RDR2DeathScreen
             });
         }
 
-        private static void CloseAllScreens()
-        {
-            
-
-            
-        }
-
         private MyCharacter GetCharacterFromPlayerId(long playerId = 0L)
         {
             if (playerId != 0L)
