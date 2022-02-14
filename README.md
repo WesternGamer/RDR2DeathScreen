@@ -8,7 +8,7 @@ Reddit Thread in r/spaceengineers: https://www.reddit.com/r/spaceengineers/comme
 
 ## Requirement
 
-Pluginloader is required to use this plugin with Space Engineers; you can find it [here](https://github.com/austinvaness/PluginLoader).
+Pluginloader is required to use this plugin with Space Engineers; you can find it [here](https://github.com/austinvaness/PluginLoader). Just enable the plugin called RDR2 Death Screen and done!
 
 ## Other Info
 
