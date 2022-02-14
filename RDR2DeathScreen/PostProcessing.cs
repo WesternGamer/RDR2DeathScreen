@@ -13,11 +13,6 @@ namespace RDR2DeathScreen
         {
             public bool Enabled;
             public float Saturation;
-            public float BloomMult;
-            public int BloomSize;
-            public bool BloomEnabled;
-            public string DirtTexture;
-            public float BloomDirtRatio;
             public float VignetteStart;
             public float VignetteLength;
         }
@@ -26,11 +21,6 @@ namespace RDR2DeathScreen
         {
             Enabled = settings.PostProcessingEnabled,
             Saturation = 1f,
-            BloomMult = 0.28f,
-            BloomSize = 6,
-            BloomEnabled = false,
-            DirtTexture = "",
-            BloomDirtRatio = 0.5f,
             VignetteStart = 2f,
             VignetteLength = 2f
         };
@@ -39,11 +29,6 @@ namespace RDR2DeathScreen
         {
             Enabled = true,
             Saturation = 0f,
-            BloomMult = 0.5f,
-            BloomSize = 1,
-            BloomEnabled = true,
-            DirtTexture = "",
-            BloomDirtRatio = 0.6f,
             VignetteStart = 3f,
             VignetteLength = 0.5f
         };
@@ -53,11 +38,6 @@ namespace RDR2DeathScreen
             MyPostprocessSettingsWrapper.AllEnabled = Death.Enabled;
 
             MyPostprocessSettingsWrapper.Settings.Data.Saturation = Death.Saturation;
-            MyPostprocessSettingsWrapper.Settings.Data.BloomMult = Death.BloomMult;
-            MyPostprocessSettingsWrapper.Settings.BloomSize = Death.BloomSize;
-            MyPostprocessSettingsWrapper.Settings.BloomEnabled = Death.BloomEnabled;
-            MyPostprocessSettingsWrapper.Settings.DirtTexture = Death.DirtTexture;
-            MyPostprocessSettingsWrapper.Settings.Data.BloomDirtRatio = Death.BloomDirtRatio;
             MyPostprocessSettingsWrapper.Settings.Data.VignetteStart = Death.VignetteStart;
             MyPostprocessSettingsWrapper.Settings.Data.VignetteLength = Death.VignetteLength;
 
@@ -69,11 +49,6 @@ namespace RDR2DeathScreen
             MyPostprocessSettingsWrapper.AllEnabled = Default.Enabled;
 
             MyPostprocessSettingsWrapper.Settings.Data.Saturation = Default.Saturation;
-            MyPostprocessSettingsWrapper.Settings.Data.BloomMult = Default.BloomMult;
-            MyPostprocessSettingsWrapper.Settings.BloomSize = Default.BloomSize;
-            MyPostprocessSettingsWrapper.Settings.BloomEnabled = Default.BloomEnabled;
-            MyPostprocessSettingsWrapper.Settings.DirtTexture = Default.DirtTexture;
-            MyPostprocessSettingsWrapper.Settings.Data.BloomDirtRatio = Default.BloomDirtRatio;
             MyPostprocessSettingsWrapper.Settings.Data.VignetteStart = Default.VignetteStart;
             MyPostprocessSettingsWrapper.Settings.Data.VignetteLength = Default.VignetteLength;
 
@@ -85,7 +60,9 @@ namespace RDR2DeathScreen
             if (OnDeath)
             {
                 VerifyDeathSettings();
+                return;
             }
+            VerifyDefaultSettings();
         }
 
         private static void VerifyDeathSettings()
@@ -98,31 +75,6 @@ namespace RDR2DeathScreen
             if (MyPostprocessSettingsWrapper.Settings.Data.Saturation.Equals(Death.Saturation))
             {
                 MyPostprocessSettingsWrapper.Settings.Data.Saturation = Death.Saturation;
-            }
-
-            if (MyPostprocessSettingsWrapper.Settings.Data.BloomMult.Equals(Death.BloomMult))
-            {
-                MyPostprocessSettingsWrapper.Settings.Data.BloomMult = Death.BloomMult;
-            }
-
-            if (MyPostprocessSettingsWrapper.Settings.BloomSize.Equals(Death.BloomSize))
-            {
-                MyPostprocessSettingsWrapper.Settings.BloomSize = Death.BloomSize;
-            }
-
-            if (MyPostprocessSettingsWrapper.Settings.BloomEnabled.Equals(Death.BloomEnabled))
-            {
-                MyPostprocessSettingsWrapper.Settings.BloomEnabled = Death.BloomEnabled;
-            }
-
-            if (MyPostprocessSettingsWrapper.Settings.DirtTexture.Equals(Death.DirtTexture))
-            {
-                MyPostprocessSettingsWrapper.Settings.DirtTexture = Death.DirtTexture;
-            }
-
-            if (MyPostprocessSettingsWrapper.Settings.Data.BloomDirtRatio.Equals(Death.BloomDirtRatio))
-            {
-                MyPostprocessSettingsWrapper.Settings.Data.BloomDirtRatio = Death.BloomDirtRatio;
             }
 
             if (MyPostprocessSettingsWrapper.Settings.Data.VignetteStart.Equals(Death.VignetteStart))
@@ -146,31 +98,6 @@ namespace RDR2DeathScreen
             if (MyPostprocessSettingsWrapper.Settings.Data.Saturation.Equals(Default.Saturation))
             {
                 MyPostprocessSettingsWrapper.Settings.Data.Saturation = Default.Saturation;
-            }
-
-            if (MyPostprocessSettingsWrapper.Settings.Data.BloomMult.Equals(Default.BloomMult))
-            {
-                MyPostprocessSettingsWrapper.Settings.Data.BloomMult = Default.BloomMult;
-            }
-
-            if (MyPostprocessSettingsWrapper.Settings.BloomSize.Equals(Default.BloomSize))
-            {
-                MyPostprocessSettingsWrapper.Settings.BloomSize = Default.BloomSize;
-            }
-
-            if (MyPostprocessSettingsWrapper.Settings.BloomEnabled.Equals(Default.BloomEnabled))
-            {
-                MyPostprocessSettingsWrapper.Settings.BloomEnabled = Default.BloomEnabled;
-            }
-
-            if (MyPostprocessSettingsWrapper.Settings.DirtTexture.Equals(Default.DirtTexture))
-            {
-                MyPostprocessSettingsWrapper.Settings.DirtTexture = Default.DirtTexture;
-            }
-
-            if (MyPostprocessSettingsWrapper.Settings.Data.BloomDirtRatio.Equals(Default.BloomDirtRatio))
-            {
-                MyPostprocessSettingsWrapper.Settings.Data.BloomDirtRatio = Default.BloomDirtRatio;
             }
 
             if (MyPostprocessSettingsWrapper.Settings.Data.VignetteStart.Equals(Default.VignetteStart))
