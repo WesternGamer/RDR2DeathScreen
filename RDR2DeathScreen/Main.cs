@@ -1,9 +1,6 @@
 ﻿using HarmonyLib;
-using RDR2DeathScreen.Patches;
-using Sandbox.Engine.Platform.VideoMode;
 using Sandbox.Engine.Utils;
 using Sandbox.Game;
-using Sandbox.Game.Entities.Character;
 using Sandbox.Game.Gui;
 using Sandbox.Game.Multiplayer;
 using Sandbox.Game.World;
@@ -16,11 +13,8 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Linq;
 using VRage.FileSystem;
 using VRage.Plugins;
-using VRageRender;
 
 namespace RDR2DeathScreen
 {
@@ -28,7 +22,7 @@ namespace RDR2DeathScreen
     {
         private ScreenFader ScreenFader;
 
-        private DeathVideo Video;
+        private DeathScreen Video;
 
         public Audio Audio;
 
@@ -63,7 +57,7 @@ namespace RDR2DeathScreen
 
             ScreenFader = new ScreenFader();
 
-            Video = new DeathVideo();
+            Video = new DeathScreen();
 
             Audio = new Audio();
         }
@@ -72,36 +66,18 @@ namespace RDR2DeathScreen
         {
             if (MySession.Static != null)
             {
-                try
+                ScreenFader.Update();
+                Audio.Update();
+                PostProcessing.Update();
+
+                if (MySession.Static.LocalCharacter.IsDead)
                 {
-                    ScreenFader.Update();
+                    DuringDeath();
                 }
-                catch { }
-                
-                try 
+                else
                 {
-                    Audio.Update();
+                    DuringNormal();
                 }
-                catch { }
-                
-                try
-                {
-                    PostProcessing.Update();
-                }
-                catch { }
-                
-                try
-                {
-                    if (MyVisualScriptLogicProvider.IsPlayerDead(MySession.Static.LocalPlayerId))
-                    {
-                        DuringDeath();
-                    }
-                    else
-                    {
-                        DuringNormal();
-                    }
-                }
-                catch { }
             }
         }
 
@@ -112,9 +88,9 @@ namespace RDR2DeathScreen
 
             if (!IsPlayerAlreadyDead)
             {
-                if (GetCharacterFromPlayerId(MySession.Static.LocalPlayerId).IsInFirstPersonView == true)
+                if (MySession.Static.LocalCharacter.IsInFirstPersonView == true)
                 {
-                    GetCharacterFromPlayerId(MySession.Static.LocalPlayerId).IsInFirstPersonView = false;
+                    MySession.Static.LocalCharacter.IsInFirstPersonView = false;
                 }
 
                 Audio.Muted = true;
@@ -178,15 +154,6 @@ namespace RDR2DeathScreen
                 MyGuiSandbox.AddScreen(Video);
             });
         }
-
-        private MyCharacter GetCharacterFromPlayerId(long playerId = 0L)
-        {
-            if (playerId != 0L)
-            {
-                return MySession.Static.Players.TryGetIdentity(playerId).Character;
-            }
-            return MySession.Static.LocalCharacter;
-        }    
 
         private void ExtractFiles()
         {

@@ -10,7 +10,7 @@ using VRageRender.Messages;
 namespace RDR2DeathScreen
 {
     // From Sandbox.Game.Gui.MyGuiScreenIntroVideo, modified to work for this plugin.
-    internal class DeathVideo : MyGuiScreenBase
+    internal class DeathScreen : MyGuiScreenBase
     {
         private uint m_videoID = uint.MaxValue;
 
@@ -18,7 +18,7 @@ namespace RDR2DeathScreen
 
         private readonly string m_currentVideo = Path.Combine(MyFileSystem.ContentPath, @"Videos\RDR2DeathScreenVideo.wmv");
 
-        public DeathVideo()
+        public DeathScreen()
             : base(Vector2.Zero)
         {
             MyRenderProxy.Settings.RenderThreadHighPriority = true;

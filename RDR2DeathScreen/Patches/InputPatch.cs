@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Sandbox.Game.Gui;
+using Sandbox.Graphics.GUI;
 
 namespace RDR2DeathScreen.Patches
 {
@@ -8,7 +9,7 @@ namespace RDR2DeathScreen.Patches
     {
         private static bool Prefix()
         {
-            if (MyGuiScreenGamePlay.DisableInput == true)
+            if (MyGuiScreenGamePlay.DisableInput == true && MyScreenManager.IsScreenOfTypeOpen(typeof(DeathScreen)))
             {
                 return false;
             }
